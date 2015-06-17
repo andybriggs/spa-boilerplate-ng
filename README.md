@@ -8,6 +8,16 @@ Boilerplate for an Angular SPA with an Express Node server
 $ git clone git@github.com:andybriggs/spa-boilerplate.git
 $ cd spa-boilerplate
 $ npm install
+```
+
+### Run Development Environment
+
+```sh
 $ gulp
-$ node server
+```
+
+### Create release
+
+```sh
+$ gulp release
 ```

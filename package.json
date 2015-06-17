@@ -10,6 +10,8 @@
   "license": "ISC",
   "devDependencies": {
     "angular": "^1.4.1",
+    "angular-resource": "^1.4.1",
+    "angular-route": "^1.4.1",
     "bootstrap": "^3.3.5",
     "bower": "^1.4.1",
     "express": "^4.12.4",
@@ -17,6 +19,9 @@
     "gulp-bower": "0.0.10",
     "gulp-clean": "^0.3.1",
     "gulp-less": "^3.0.3",
+    "gulp-minify-css": "^1.1.6",
+    "gulp-nodemon": "^2.0.3",
+    "jade": "^1.11.0",
     "run-sequence": "^1.1.0"
   }
 }

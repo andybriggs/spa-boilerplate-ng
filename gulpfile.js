@@ -6,6 +6,8 @@ var gulp = require('gulp');
 var less = require('gulp-less');
 var clean = require('gulp-clean');
 var runSequence = require('run-sequence');
+var nodemon = require('gulp-nodemon');
+var minifyCSS = require('gulp-minify-css');
 
 // =======================================================================// 
 // Individual tasks                                                       //
@@ -13,14 +15,21 @@ var runSequence = require('run-sequence');
 
 // Compile less
 gulp.task('less', function() {
-  return gulp.src('./node_modules/bootstrap/less/bootstrap.less')
+  return gulp.src('./public/css/style.less')
   .pipe(less())
-  .pipe(gulp.dest('./public/vendor/'));
+  .pipe(gulp.dest('./public/css/'));
+});
+
+// Minify css
+gulp.task('minify-css', function() {
+  return gulp.src('./public/css/style.css')
+  .pipe(minifyCSS())
+  .pipe(gulp.dest('./public/css/'));
 });
 
 // Copy unminified vendor files from node_modules to public vendor folder
 gulp.task('copy-dev', function() {
-  return gulp.src('./node_modules/angular/angular.js')
+  return gulp.src(['./node_modules/angular/angular.js','./node_modules/angular-route/angular-route.js','./node_modules/angular-resource/angular-resource.js','./node_modules/bootstrap/dist/css/bootstrap.css'])
   .pipe(gulp.dest('./public/vendor/'));
 });
 
@@ -36,6 +45,15 @@ gulp.task('clean', function() {
   .pipe(clean());
 });
 
+// Use nodemon to watch for dev updates
+gulp.task('start', function() {
+  return nodemon({ 
+    script: 'server.js', 
+    ext: 'js html', 
+    env: { 'NODE_ENV': 'development' }
+  });
+});
+
 // =======================================================================// 
 // Build tasks                                                            //
 // =======================================================================//
@@ -47,7 +65,7 @@ gulp.task('develop', function() {
 
 // Run a clean on unminified code and copy dist vendor files into public vendor folder
 gulp.task('release', function() {
-  runSequence('clean','copy-release');
+  runSequence('clean','copy-release', 'minify-css');
 });
 
 // =======================================================================// 
@@ -56,7 +74,7 @@ gulp.task('release', function() {
 
 // Default task sets up develoment environment
 gulp.task('default', function(){
-  gulp.start('develop', function() {
-    console.log('All tasks complete.');
+  gulp.start('develop', 'start', function() {
+    console.log('All tasks complete. Nodemon watching...');
   });
 });
