@@ -1,0 +1,22 @@
+{
+  "name": "app-boilerplate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andy Briggs",
+  "license": "ISC",
+  "devDependencies": {
+    "angular": "^1.4.1",
+    "bootstrap": "^3.3.5",
+    "bower": "^1.4.1",
+    "express": "^4.12.4",
+    "gulp": "^3.9.0",
+    "gulp-bower": "0.0.10",
+    "gulp-clean": "^0.3.1",
+    "gulp-less": "^3.0.3",
+    "run-sequence": "^1.1.0"
+  }
+}
