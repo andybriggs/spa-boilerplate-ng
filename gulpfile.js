@@ -20,6 +20,11 @@ gulp.task('less', function() {
   .pipe(gulp.dest('./public/css/'));
 });
 
+// Watch less files for changes
+gulp.task('watch-less', function() {
+  return gulp.watch('./public/css/*.less', ['less']);
+});
+
 // Minify css
 gulp.task('minify-css', function() {
   return gulp.src('./public/css/style.css')
@@ -74,7 +79,7 @@ gulp.task('release', function() {
 
 // Default task sets up develoment environment
 gulp.task('default', function(){
-  gulp.start('develop', 'start', function() {
-    console.log('All tasks complete. Nodemon watching...');
+  gulp.start('develop', 'start', 'watch-less', function() {
+    console.log('All tasks complete. Nodemon watching server, less watch running...');
   });
 });

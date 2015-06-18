@@ -21,6 +21,7 @@
     "gulp-less": "^3.0.3",
     "gulp-minify-css": "^1.1.6",
     "gulp-nodemon": "^2.0.3",
+    "gulp-watch-less": "^1.0.1",
     "jade": "^1.11.0",
     "run-sequence": "^1.1.0"
   }
