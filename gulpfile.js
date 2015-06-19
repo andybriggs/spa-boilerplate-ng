@@ -10,7 +10,7 @@ var nodemon = require('gulp-nodemon');
 var minifyCSS = require('gulp-minify-css');
 var inject = require('gulp-inject');
 var angularFilesort = require('gulp-angular-filesort');
-
+var path = require('./path.config.js');
 
 // =======================================================================// 
 // Individual tasks                                                       //
@@ -18,54 +18,54 @@ var angularFilesort = require('gulp-angular-filesort');
 
 // Compile less
 gulp.task('less', function() {
-  return gulp.src('./public/css/style.less')
+  return gulp.src(path.CSS + 'style.less')
   .pipe(less())
-  .pipe(gulp.dest('./public/css/'));
+  .pipe(gulp.dest(path.CSS));
 });
 
 // Watch less files for changes
 gulp.task('watch-less', function() {
-  return gulp.watch('./public/css/*.less', ['less']);
+  return gulp.watch(path.CSS + '*.less', ['less']);
 });
 
 // Minify css
 gulp.task('minify-css', function() {
-  return gulp.src('./public/css/style.css')
+  return gulp.src(path.CSS + 'style.css')
   .pipe(minifyCSS())
-  .pipe(gulp.dest('./public/css/'));
+  .pipe(gulp.dest(path.CSS));
 });
 
 // Copy unminified vendor files from node_modules to public vendor folder
 gulp.task('dev-copy', function() {
-  return gulp.src(['./node_modules/angular/angular.js','./node_modules/angular-route/angular-route.js','./node_modules/angular-resource/angular-resource.js','./node_modules/bootstrap/dist/css/bootstrap.css'])
-  .pipe(gulp.dest('./public/vendor/'));
+  return gulp.src([path.ANGULAR + '/angular.js', path.ANGULAR + '-route/angular-route.js', path.ANGULAR + '-resource/angular-resource.js', path.BOOTSTRAP + '.css'])
+  .pipe(gulp.dest(path.VENDOR));
 });
 
 // Copy minified vendor files from node_modules to public vendor folder
 gulp.task('release-copy', function() {
-  return gulp.src(['./node_modules/angular/angular.min.js', './node_modules/angular-route/angular-route.min.js','./node_modules/angular-resource/angular-resource.min.js', './node_modules/bootstrap/dist/css/bootstrap.min.css'])
-  .pipe(gulp.dest('./public/vendor/'));
+  return gulp.src([path.ANGULAR + '/angular.min.js', path.ANGULAR + '-route/angular-route.min.js', path.ANGULAR + '-resource/angular-resource.min.js',  path.BOOTSTRAP + '.min.css'])
+  .pipe(gulp.dest(path.VENDOR));
 });
 
 // Inject references to vendor files into jade templates
 
 gulp.task('js-vendor-reference', function () {
-  var target = gulp.src('./server/includes/scripts.jade');
-  var sources = gulp.src('./public/vendor/*.js').pipe(angularFilesort());
+  var target = gulp.src(path.SVR_INCLUDES + 'scripts.jade');
+  var sources = gulp.src(path.VENDOR + '*.js').pipe(angularFilesort());
   return target.pipe(inject(sources, { ignorePath: 'public',  }))
-    .pipe(gulp.dest('./server/includes/'));
+    .pipe(gulp.dest(path.SVR_INCLUDES));
 });
 
 gulp.task('css-vendor-reference', function () {
-  var target = gulp.src('./server/includes/layout.jade');
-  var sources = gulp.src('./public/vendor/*.css'); 
+  var target = gulp.src(path.SVR_INCLUDES + 'layout.jade');
+  var sources = gulp.src(path.VENDOR + '*.css'); 
   return target.pipe(inject(sources, { ignorePath: 'public',  }))
-    .pipe(gulp.dest('./server/includes/'));
+    .pipe(gulp.dest(path.SVR_INCLUDES));
 });
 
 // Delete vendor folder and contents
 gulp.task('clean', function() {
-  return gulp.src('./public/vendor', { read: false })
+  return gulp.src(path.VENDOR, { read: false })
   .pipe(clean());
 });
 
