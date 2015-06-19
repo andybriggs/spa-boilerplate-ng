@@ -9,6 +9,8 @@ var runSequence = require('run-sequence');
 var nodemon = require('gulp-nodemon');
 var minifyCSS = require('gulp-minify-css');
 var inject = require('gulp-inject');
+var angularFilesort = require('gulp-angular-filesort');
+
 
 // =======================================================================// 
 // Individual tasks                                                       //
@@ -41,7 +43,7 @@ gulp.task('dev-copy', function() {
 
 // Copy minified vendor files from node_modules to public vendor folder
 gulp.task('release-copy', function() {
-  return gulp.src(['./node_modules/angular/angular.min.js','./node_modules/bootstrap/dist/css/bootstrap.min.css'])
+  return gulp.src(['./node_modules/angular/angular.min.js', './node_modules/angular-route/angular-route.min.js','./node_modules/angular-resource/angular-resource.min.js', './node_modules/bootstrap/dist/css/bootstrap.min.css'])
   .pipe(gulp.dest('./public/vendor/'));
 });
 
@@ -50,9 +52,13 @@ gulp.task('release-copy', function() {
 gulp.task('vendor-reference', function () {
 
   var target = gulp.src(['./server/includes/layout.jade','./server/includes/scripts.jade']);
-  var sources = gulp.src(['./public/vendor/*.js', './public/vendor/*.css'], {read: false});
+  var jsSources = gulp.src('./public/vendor/*.js').pipe(angularFilesort());
+  var cssSources = gulp.src('./public/vendor/*.css');
  
-  return target.pipe(inject(sources))
+  return target.pipe(inject(jsSources, { ignorePath: 'public',  }))
+    .pipe(gulp.dest('./server/includes/'));
+
+     target.pipe(inject(cssSources, { ignorePath: 'public',  }))
     .pipe(gulp.dest('./server/includes/'));
 });
 
