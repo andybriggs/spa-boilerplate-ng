@@ -8,6 +8,7 @@ var clean = require('gulp-clean');
 var runSequence = require('run-sequence');
 var nodemon = require('gulp-nodemon');
 var minifyCSS = require('gulp-minify-css');
+var inject = require('gulp-inject');
 
 // =======================================================================// 
 // Individual tasks                                                       //
@@ -33,15 +34,26 @@ gulp.task('minify-css', function() {
 });
 
 // Copy unminified vendor files from node_modules to public vendor folder
-gulp.task('copy-dev', function() {
+gulp.task('dev-copy', function() {
   return gulp.src(['./node_modules/angular/angular.js','./node_modules/angular-route/angular-route.js','./node_modules/angular-resource/angular-resource.js','./node_modules/bootstrap/dist/css/bootstrap.css'])
   .pipe(gulp.dest('./public/vendor/'));
 });
 
 // Copy minified vendor files from node_modules to public vendor folder
-gulp.task('copy-release', function() {
+gulp.task('release-copy', function() {
   return gulp.src(['./node_modules/angular/angular.min.js','./node_modules/bootstrap/dist/css/bootstrap.min.css'])
   .pipe(gulp.dest('./public/vendor/'));
+});
+
+// Create references to unminifed files for dev
+
+gulp.task('vendor-reference', function () {
+
+  var target = gulp.src(['./server/includes/layout.jade','./server/includes/scripts.jade']);
+  var sources = gulp.src(['./public/vendor/*.js', './public/vendor/*.css'], {read: false});
+ 
+  return target.pipe(inject(sources))
+    .pipe(gulp.dest('./server/includes/'));
 });
 
 // Delete vendor folder and contents
@@ -65,12 +77,12 @@ gulp.task('start', function() {
 
 // Run a clean on vendor folder and pipe in unminified versions
 gulp.task('develop', function() {
-  runSequence('clean','copy-dev', 'less');
+  runSequence('clean','dev-copy', 'vendor-reference', 'less');
 });
 
 // Run a clean on unminified code and copy dist vendor files into public vendor folder
 gulp.task('release', function() {
-  runSequence('clean','copy-release', 'minify-css');
+  runSequence('clean','release-copy', 'vendor-reference', 'minify-css');
 });
 
 // =======================================================================// 

@@ -2,7 +2,9 @@ doctype
 html(ng-app="app")
   head
     base(href="/")
-    link(rel="stylesheet", href="/vendor/bootstrap.css")
+    //- inject:css
+	link(rel="stylesheet", href="/public/vendor/bootstrap.css")
+	//- endinject
     link(rel="stylesheet", href="/css/style.css")
   body(ng-controller="mainController")
   block main-content
