@@ -47,18 +47,19 @@ gulp.task('release-copy', function() {
   .pipe(gulp.dest('./public/vendor/'));
 });
 
-// Create references to unminifed files for dev
+// Inject references to vendor files into jade templates
 
-gulp.task('vendor-reference', function () {
-
-  var target = gulp.src(['./server/includes/layout.jade','./server/includes/scripts.jade']);
-  var jsSources = gulp.src('./public/vendor/*.js').pipe(angularFilesort());
-  var cssSources = gulp.src('./public/vendor/*.css');
- 
-  return target.pipe(inject(jsSources, { ignorePath: 'public',  }))
+gulp.task('js-vendor-reference', function () {
+  var target = gulp.src('./server/includes/scripts.jade');
+  var sources = gulp.src('./public/vendor/*.js').pipe(angularFilesort());
+  return target.pipe(inject(sources, { ignorePath: 'public',  }))
     .pipe(gulp.dest('./server/includes/'));
+});
 
-     target.pipe(inject(cssSources, { ignorePath: 'public',  }))
+gulp.task('css-vendor-reference', function () {
+  var target = gulp.src('./server/includes/layout.jade');
+  var sources = gulp.src('./public/vendor/*.css'); 
+  return target.pipe(inject(sources, { ignorePath: 'public',  }))
     .pipe(gulp.dest('./server/includes/'));
 });
 
@@ -83,12 +84,12 @@ gulp.task('start', function() {
 
 // Run a clean on vendor folder and pipe in unminified versions
 gulp.task('develop', function() {
-  runSequence('clean','dev-copy', 'vendor-reference', 'less');
+  runSequence('clean','dev-copy', 'css-vendor-reference', 'js-vendor-reference', 'less');
 });
 
 // Run a clean on unminified code and copy dist vendor files into public vendor folder
 gulp.task('release', function() {
-  runSequence('clean','release-copy', 'vendor-reference', 'minify-css');
+  runSequence('clean','release-copy', 'css-vendor-reference', 'js-vendor-reference', 'minify-css');
 });
 
 // =======================================================================// 
